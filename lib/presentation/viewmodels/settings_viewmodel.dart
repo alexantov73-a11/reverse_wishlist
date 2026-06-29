@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:in_app_review/in_app_review.dart';
+
 import '../../data/services/local_storage_service.dart';
 
 class SettingsViewModel extends ChangeNotifier {
@@ -28,5 +30,10 @@ class SettingsViewModel extends ChangeNotifier {
       // ignore: avoid_print
       print('Error clearing data: $e');
     }
+  }
+
+  Future<void> requestAppReview() async {
+    final InAppReview inAppReview = InAppReview.instance;
+    inAppReview.requestReview();
   }
 }
