@@ -1,5 +1,6 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
+import 'dart:io';
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -31,11 +32,33 @@ class NotificationService {
 
     await _flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
-    _flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-          IOSFlutterLocalNotificationsPlugin
-        >()
-        ?.requestPermissions(alert: true, badge: true, sound: true);
+    if (Platform.isIOS) {
+      final iosImpl = _flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin
+          >();
+      if (iosImpl != null) {
+        iosImpl.requestPermissions(alert: true, badge: true, sound: true);
+      }
+    }
+  }
+
+  Future<bool> requestIOSPermissions() async {
+    if (Platform.isIOS) {
+      final iosImpl = _flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin
+          >();
+      if (iosImpl != null) {
+        final result = await iosImpl.requestPermissions(
+          alert: true,
+          badge: true,
+          sound: true,
+        );
+        return result ?? false;
+      }
+    }
+    return true;
   }
 
   Future<void> showNotification({

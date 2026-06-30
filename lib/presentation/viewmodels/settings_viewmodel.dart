@@ -1,11 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:in_app_review/in_app_review.dart';
-
+import 'package:flutter/foundation.dart';
 import '../../data/services/local_storage_service.dart';
+import '../../data/services/notification_service.dart';
+import 'package:in_app_review/in_app_review.dart';
 
 class SettingsViewModel extends ChangeNotifier {
   final LocalStorageService _storageService;
-
   bool _notificationsEnabled = true;
 
   SettingsViewModel(this._storageService);
@@ -18,7 +17,13 @@ class SettingsViewModel extends ChangeNotifier {
   }
 
   Future<void> toggleNotifications(bool value) async {
-    _notificationsEnabled = value;
+    if (value) {
+      // Коли включаємо - просимо дозвіл на iOS
+      final granted = await NotificationService().requestIOSPermissions();
+      _notificationsEnabled = granted;
+    } else {
+      _notificationsEnabled = false;
+    }
     notifyListeners();
   }
 
