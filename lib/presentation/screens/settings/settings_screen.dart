@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../viewmodels/theme_viewmodel.dart';
 import '../../viewmodels/settings_viewmodel.dart';
 
@@ -31,16 +32,49 @@ class SettingsScreen extends StatelessWidget {
           ),
           const SizedBox(height: 24),
 
+          // Notifications
+          _buildSectionTitle(context, '🔔 Notifications'),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Consumer<SettingsViewModel>(
+                builder: (context, settingsVM, _) => SwitchListTile(
+                  title: const Text('Enable Notifications'),
+                  value: settingsVM.notificationsEnabled,
+                  onChanged: (value) async {
+                    await settingsVM.toggleNotifications(value);
+                  },
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+
           // App Actions
           _buildSectionTitle(context, '⭐ App'),
           Card(
-            child: ListTile(
-              leading: const Icon(Icons.star),
-              title: const Text('Rate App'),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () {
-                context.read<SettingsViewModel>().requestAppReview();
-              },
+            child: Column(
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.star),
+                  title: const Text('Rate App'),
+                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                  onTap: () {
+                    context.read<SettingsViewModel>().requestAppReview();
+                  },
+                ),
+                const Divider(height: 0),
+                ListTile(
+                  leading: const Icon(Icons.share),
+                  title: const Text('Share App'),
+                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                  onTap: () {
+                    Share.share(
+                      'Check out Reverse Wishlist - Smart gift tracking and conscious consumption! https://example.com',
+                    );
+                  },
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 24),

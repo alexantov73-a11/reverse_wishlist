@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../../viewmodels/create_edit_card_viewmodel.dart';
 import '../../viewmodels/detail_viewmodel.dart';
 import '../../../core/constants/app_constants.dart';
+import '../../../data/services/notification_service.dart'; // ← ДОДАВАЙ
 
 class CreateEditCardScreen extends StatefulWidget {
   final String? cardId;
@@ -323,8 +324,16 @@ class _CreateEditCardScreenState extends State<CreateEditCardScreen> {
 
     viewModel
         .saveCard()
-        .then((_) {
+        .then((_) async {
           if (mounted) {
+            // ← ДОДАЙ НОТИФІКАЦІЮ
+            await context.read<NotificationService>().showNotification(
+              id: 101,
+              title: '✅ Card Created!',
+              body: 'Great! You refused another impulse purchase.',
+              payload: 'card_created',
+            );
+
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(

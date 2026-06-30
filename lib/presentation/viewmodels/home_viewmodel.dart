@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../data/services/local_storage_service.dart';
 import '../../data/models/reverse_card_model.dart';
 import '../../data/models/analytics_model.dart';
+import '../../data/services/notification_service.dart';
 
 class HomeViewModel extends ChangeNotifier {
   final LocalStorageService _storageService;
@@ -56,6 +57,20 @@ class HomeViewModel extends ChangeNotifier {
     } catch (e) {
       rethrow;
     }
+  }
+
+  Future<void> scheduleWeeklyReminder() async {
+    final notificationService = NotificationService();
+
+    // Кожен вівторок в 9:00 AM
+    await notificationService.scheduleWeeklyReminder(
+      id: 100,
+      title: '📋 Weekly Check-in',
+      body: "How many impulse purchases did you refuse this week?",
+      dayOfWeek: 2, // Tuesday
+      hour: 9,
+      minute: 0,
+    );
   }
 
   void refresh() => loadData();

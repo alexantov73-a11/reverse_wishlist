@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:timezone/data/latest.dart' as tz_data;
 import 'data/services/local_storage_service.dart';
 import 'data/services/camera_service.dart';
+import 'data/services/notification_service.dart';
 import 'presentation/screens/preloader/preloader_screen.dart';
 import 'presentation/screens/onboarding/onboarding_screen.dart';
 import 'presentation/screens/home/home_screen.dart';
@@ -20,23 +22,35 @@ import 'presentation/viewmodels/theme_viewmodel.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  tz_data.initializeTimeZones(); // ← ДОБАВЬ
+
   final storageService = LocalStorageService();
   final cameraService = CameraService();
+  final notificationService = NotificationService();
 
   await storageService.init();
   await cameraService.init();
+  await notificationService.init(); // ← ДОБАВЬ
 
-  runApp(MyApp(storageService: storageService, cameraService: cameraService));
+  runApp(
+    MyApp(
+      storageService: storageService,
+      cameraService: cameraService,
+      notificationService: notificationService,
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
   final LocalStorageService storageService;
   final CameraService cameraService;
+  final NotificationService notificationService;
 
   const MyApp({
     super.key,
     required this.storageService,
     required this.cameraService,
+    required this.notificationService,
   });
 
   @override
@@ -45,6 +59,7 @@ class MyApp extends StatelessWidget {
       providers: [
         Provider<LocalStorageService>(create: (_) => storageService),
         Provider<CameraService>(create: (_) => cameraService),
+        Provider<NotificationService>(create: (_) => notificationService),
         ChangeNotifierProvider(create: (_) => ThemeViewModel(storageService)),
         ChangeNotifierProvider(
           create: (_) => PreloaderViewModel(storageService),
