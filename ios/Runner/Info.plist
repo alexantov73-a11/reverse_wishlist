@@ -66,5 +66,11 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>We need access to your camera to take photos of products you want to refuse</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We need access to your gallery to select photos of products</string>
+	<key>NSPhotoLibraryAddOnlyUsageDescription</key>
+	<string>We need permission to save photos</string>
 </dict>
 </plist>
